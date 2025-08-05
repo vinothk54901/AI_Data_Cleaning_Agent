@@ -16,6 +16,7 @@ if not openai_api_key:
 # Define AI Model
 llm = OpenAI(openai_api_key=openai_api_key, temperature=0)
 
+
 class CleaningState(BaseModel):
     """State schema defining input and output for the LangGraph agent."""
     input_text: str
@@ -33,7 +34,7 @@ class AIAgent:
         def agent_logic(state: CleaningState) -> CleaningState:
             """Processes input and returns a structured response."""
             response = llm.invoke(state.input_text)
-            return CleaningState(input_text=state.input_text, structured_response=response)  # ✅ Ensuring structured response
+            return CleaningState(input_text=state.input_text, structured_response=response)  # Ensuring structured response
 
         graph.add_node("cleaning_agent", agent_logic)
         graph.add_edge("cleaning_agent", END)
@@ -45,7 +46,7 @@ class AIAgent:
         cleaned_responses = []
 
         for i in range(0, len(df), batch_size):
-            df_batch = df.iloc[i:i + batch_size]  # ✅ Process 20 rows at a time
+            df_batch = df.iloc[i:i + batch_size]  #  Process 20 rows at a time
 
             prompt = f"""
             You are an AI Data Cleaning Agent. Analyze the dataset:
@@ -64,6 +65,6 @@ class AIAgent:
             if isinstance(response, dict):
                 response = CleaningState(**response)
 
-            cleaned_responses.append(response.structured_response)  # ✅ Store results
+            cleaned_responses.append(response.structured_response)  # Store results
 
-        return "\n".join(cleaned_responses)  # ✅ Combine all cleaned results
+        return "\n".join(cleaned_responses)  # Combine all cleaned results
